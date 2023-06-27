@@ -5,3 +5,5 @@
 2. Extraia e abra a pasta `docker` no terminal;
 
 3. Rode o comando `docker compose up -d`
+
+Códigos do banco, front e back por `https://github.com/jocelinnik/`
