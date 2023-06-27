@@ -1,0 +1,52 @@
+version: '3.1'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./webacademy-livros-backend
+      dockerfile: Dockerfile
+    ports:
+      - 4444:4444
+    depends_on:
+      - db
+    restart: on-failure
+  frontend:
+    container_name: frontend
+    build:
+      context: ./webacademy-livros-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+    volumes:
+      - backend_logs:/app/log
+    depends_on:
+      - backend
+  db:
+    container_name: db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: webacademy_livros
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./webacademy-livros-config:/docker-entrypoint-initdb.d
+  db_admin:
+    container_name: db_admin
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: root
+
+volumes:
+  db_data:
+  backend_logs:
